@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>台日社畜換算器💼</title>
+    <title>台日社畜換算器TW→JP💼</title>
     <style>
         :root {
             --primary-color: #3a86ff;
@@ -170,7 +170,7 @@
 <body>
 
 <div class="container">
-    <h1>💼 日本社畜與菁英職等判定</h1>
+    <h1>💼 日本社畜職等判定</h1>
     <p class="subtitle">輸入你的台幣年薪，看看你到日本是哪種階級！<br><small>(數據依據 2024-2025 日本厚生勞動省與役員報酬統計)</small></p>
     
     <div class="input-group">
@@ -185,21 +185,27 @@
         <div class="title-badge" id="jpTitle">課長</div>
         
         <div class="details">
-            <div>💡 <strong>對應日幣年收：</strong> <span id="jpSalaryRange">--</span></div>
-            <div>📊 <strong>2025日本現況：</strong> <span id="jpDesc">--</span></div>
+            <div>📊 <strong>2025 日本現況：</strong> <span id="jpDesc">--</span></div>
             <div class="quote" id="jpQuote">"心聲語錄"</div>
         </div>
     </div>
 </div>
 
 <script>
+    // 嚴選亞洲（日本/台灣）人像風格之 Unsplash 免版稅圖片
     const images = {
-        haken: "https://images.unsplash.com/photo-1622675363311-3e1904dc1885?w=400&auto=format&fit=crop&q=80", // 派遣、新人
-        syain: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&auto=format&fit=crop&q=80", // 一般社員
-        kakarichou: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&auto=format&fit=crop&q=80", // 係長
-        kachou: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80", // 課長
-        buchou: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80", // 部長
-        torishimariyaku: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&auto=format&fit=crop&q=80" // 取締役 (高級經理、董事代表)
+        // 派遣、新卒：迷茫或剛入社的年輕亞洲女孩
+        haken: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&auto=format&fit=crop&q=80", 
+        // 一般社員：專注於工作的亞洲年輕男上班族
+        syain: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400&auto=format&fit=crop&q=80", 
+        // 係長：看起來有點疲憊、在辦公室苦惱的亞洲男性
+        kakarichou: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&auto=format&fit=crop&q=80", 
+        // 課長：精明幹練、穿著體面的東亞中年女性主管
+        kachou: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80", 
+        // 部長：氣定神閒、著正裝的亞洲中年紳士
+        buchou: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80", 
+        // 取締役：成熟、面帶自信微笑的亞洲高階領袖
+        torishimariyaku: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80" 
     };
 
     function calculateRank() {
@@ -212,14 +218,12 @@
         const twSalary = parseFloat(twSalaryInput) * 10000;
         const jpyRate = 0.21;
         const jpSalary = twSalary / jpyRate;
-        const jpSalaryTenThousand = Math.round(jpSalary / 10000);
 
         let rank = {};
 
         if (jpSalary < 3000000) {
             rank = {
                 title: '派遣社員 / 新卒 (約聘新人)',
-                range: '300 萬日圓以下',
                 desc: '相當於日本剛畢業的社會新鮮人，或是時薪制的派遣員工。每天都在煩惱下個月的房租，午餐都挑 300 日圓的超商飯糰與折價便當。',
                 quote: '「只要不加班...什麼都好。今天便利商店的生義大利麵有打折嗎？」',
                 imgUrl: images.haken
@@ -227,7 +231,6 @@
         } else if (jpSalary >= 3000000 && jpSalary < 4500000) {
             rank = {
                 title: '一般社員 (正職普通事務員)',
-                range: '300 萬 ～ 450 萬日圓',
                 desc: '日本企業最穩健的骨幹！年收坐落在全國上班族平均的中位數。工作能按時完成，週五晚上會和同事去居酒屋喝杯生啤酒，算是稱職的日本社畜。',
                 quote: '「好想下班去吃鳥貴族...可惡，前輩還沒走，我再假裝敲一下鍵盤好了。」',
                 imgUrl: images.syain
@@ -235,7 +238,6 @@
         } else if (jpSalary >= 4500000 && jpSalary < 6500000) {
             rank = {
                 title: '係長 (主任 / 團隊小組長)',
-                range: '450 萬 ～ 650 萬日圓',
                 desc: '恭喜升上「管理職的登入大門」！開始要帶新人了。雖然薪水變多，但夾在挑剔的課長與任性的新人之間，心理壓力極大，是個胃藥消耗量極高的職位。',
                 quote: '「課長嫌報告太慢，新人又問我 excel 怎麼用...我的胃，今天也在痛呢。」',
                 imgUrl: images.kakarichou
@@ -243,39 +245,33 @@
         } else if (jpSalary >= 6500000 && jpSalary < 9000000) {
             rank = {
                 title: '課長 (中階管理職)',
-                range: '650 萬 ～ 900 萬日圓',
                 desc: '實權在握的課長！根據2025年統計，大企業課長平均年收可達800萬日圓。手下有一整個課。雖然薪資豐厚，但要負責扛全部的業績責任，頭髮也開始漸漸變少...。',
                 quote: '「只要這個專案成功，我就能去高爾夫球場揮桿了...等等，為什麼系統又崩潰了？！」',
                 imgUrl: images.kachou
             };
         } else if (jpSalary >= 9000000 && jpSalary < 15000000) {
-            // 部長上限調整為 1500 萬日圓
             rank = {
                 title: '部長 (部門高級主管)',
-                range: '900 萬 ～ 1,500 萬日圓',
                 desc: '公司頂端的菁英！享有極高的威嚴，出差都坐新幹線的綠色車廂（商務艙）。在跨部門會議中一言九鼎，雖然年薪優渥，但主要精力都在處理公司內部的派系政治。',
                 quote: '「這季的 KPI 不錯。大家辛苦了，今晚去銀座開會（應酬）吧。」',
                 imgUrl: images.buchou
             };
         } else {
-            // 新增最高職等：取締役
             rank = {
                 title: '取締役 (董事會成員 / 執行董事)',
-                range: '1,500 萬日圓以上',
                 desc: '公司金字塔頂端、真正掌握決策與股權的「支配階級」！在大型上市企業中，取締役的報酬動輒數千萬甚至上億日圓。出入有專車接送，開會只需聽取簡報與簽字，掌握著所有社畜的升遷與生死！',
                 quote: '「今年的戰略方向需要微調...對了，把剛剛那個開會頂撞我的課長調去北海道分部吧。」',
                 imgUrl: images.torishimariyaku
             };
         }
 
-        // 渲染
+        // 渲染結果
         document.getElementById('resultImg').src = rank.imgUrl;
         document.getElementById('jpTitle').innerText = rank.title;
-        document.getElementById('jpSalaryRange').innerText = `約 ${jpSalaryTenThousand.toLocaleString()} 萬日圓 (${rank.range})`;
         document.getElementById('jpDesc').innerText = rank.desc;
         document.getElementById('jpQuote').innerText = rank.quote;
 
-        // 顯示
+        // 顯示結果區
         document.getElementById('resultBox').style.display = 'block';
     }
 </script>
