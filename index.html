@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本社畜與菁英職等換算器 🇯🇵💼</title>
+    <style>
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #ff006e;
+            --bg-color: #f0f3f8;
+            --card-bg: #ffffff;
+            --text-color: #2b2d42;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #1a1a2e;
+        }
+
+        p.subtitle {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        .currency-tag {
+            font-size: 14px;
+            color: #888;
+            margin-top: 5px;
+            display: block;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.1s, background-color 0.3s;
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.3);
+        }
+
+        button:hover {
+            background-color: #2a6edb;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* 結果區 */
+        .result-box {
+            display: none;
+            margin-top: 30px;
+            border-top: 2px dashed #eee;
+            padding-top: 25px;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .illustration-img {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            display: block;
+        }
+
+        .title-badge {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .details {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .details strong {
+            color: var(--primary-color);
+        }
+
+        .quote {
+            font-style: italic;
+            color: #555;
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>💼 日本社畜與菁英職等判定</h1>
+    <p class="subtitle">輸入你的台幣年薪，看看你到日本是哪種階級！<br><small>(數據依據 2024-2025 日本厚生勞動省與役員報酬統計)</small></p>
+    
+    <div class="input-group">
+        <input type="number" id="twSalaryWan" placeholder="請輸入台幣年薪 (例如填：100)" min="0">
+        <span class="currency-tag">單位：萬新台幣 (TWD)</span>
+    </div>
+
+    <button onclick="calculateRank()">鑑定我的社畜階級 🔍</button>
+
+    <div class="result-box" id="resultBox">
+        <img class="illustration-img" id="resultImg" src="" alt="社畜與董事職等">
+        <div class="title-badge" id="jpTitle">課長</div>
+        
+        <div class="details">
+            <div>💡 <strong>對應日幣年收：</strong> <span id="jpSalaryRange">--</span></div>
+            <div>📊 <strong>2025日本現況：</strong> <span id="jpDesc">--</span></div>
+            <div class="quote" id="jpQuote">"心聲語錄"</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const images = {
+        haken: "https://images.unsplash.com/photo-1622675363311-3e1904dc1885?w=400&auto=format&fit=crop&q=80", // 派遣、新人
+        syain: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&auto=format&fit=crop&q=80", // 一般社員
+        kakarichou: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&auto=format&fit=crop&q=80", // 係長
+        kachou: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80", // 課長
+        buchou: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&auto=format&fit=crop&q=80", // 部長
+        torishimariyaku: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&auto=format&fit=crop&q=80" // 取締役 (高級經理、董事代表)
+    };
+
+    function calculateRank() {
+        const twSalaryInput = document.getElementById('twSalaryWan').value;
+        if (!twSalaryInput || twSalaryInput <= 0) {
+            alert('請輸入有效的年薪（萬）喔！');
+            return;
+        }
+
+        const twSalary = parseFloat(twSalaryInput) * 10000;
+        const jpyRate = 0.21;
+        const jpSalary = twSalary / jpyRate;
+        const jpSalaryTenThousand = Math.round(jpSalary / 10000);
+
+        let rank = {};
+
+        if (jpSalary < 3000000) {
+            rank = {
+                title: '派遣社員 / 新卒 (約聘新人)',
+                range: '300 萬日圓以下',
+                desc: '相當於日本剛畢業的社會新鮮人，或是時薪制的派遣員工。每天都在煩惱下個月的房租，午餐都挑 300 日圓的超商飯糰與折價便當。',
+                quote: '「只要不加班...什麼都好。今天便利商店的生義大利麵有打折嗎？」',
+                imgUrl: images.haken
+            };
+        } else if (jpSalary >= 3000000 && jpSalary < 4500000) {
+            rank = {
+                title: '一般社員 (正職普通事務員)',
+                range: '300 萬 ～ 450 萬日圓',
+                desc: '日本企業最穩健的骨幹！年收坐落在全國上班族平均的中位數。工作能按時完成，週五晚上會和同事去居酒屋喝杯生啤酒，算是稱職的日本社畜。',
+                quote: '「好想下班去吃鳥貴族...可惡，前輩還沒走，我再假裝敲一下鍵盤好了。」',
+                imgUrl: images.syain
+            };
+        } else if (jpSalary >= 4500000 && jpSalary < 6500000) {
+            rank = {
+                title: '係長 (主任 / 團隊小組長)',
+                range: '450 萬 ～ 650 萬日圓',
+                desc: '恭喜升上「管理職的登入大門」！開始要帶新人了。雖然薪水變多，但夾在挑剔的課長與任性的新人之間，心理壓力極大，是個胃藥消耗量極高的職位。',
+                quote: '「課長嫌報告太慢，新人又問我 excel 怎麼用...我的胃，今天也在痛呢。」',
+                imgUrl: images.kakarichou
+            };
+        } else if (jpSalary >= 6500000 && jpSalary < 9000000) {
+            rank = {
+                title: '課長 (中階管理職)',
+                range: '650 萬 ～ 900 萬日圓',
+                desc: '實權在握的課長！根據2025年統計，大企業課長平均年收可達800萬日圓。手下有一整個課。雖然薪資豐厚，但要負責扛全部的業績責任，頭髮也開始漸漸變少...。',
+                quote: '「只要這個專案成功，我就能去高爾夫球場揮桿了...等等，為什麼系統又崩潰了？！」',
+                imgUrl: images.kachou
+            };
+        } else if (jpSalary >= 9000000 && jpSalary < 15000000) {
+            // 部長上限調整為 1500 萬日圓
+            rank = {
+                title: '部長 (部門高級主管)',
+                range: '900 萬 ～ 1,500 萬日圓',
+                desc: '公司頂端的菁英！享有極高的威嚴，出差都坐新幹線的綠色車廂（商務艙）。在跨部門會議中一言九鼎，雖然年薪優渥，但主要精力都在處理公司內部的派系政治。',
+                quote: '「這季的 KPI 不錯。大家辛苦了，今晚去銀座開會（應酬）吧。」',
+                imgUrl: images.buchou
+            };
+        } else {
+            // 新增最高職等：取締役
+            rank = {
+                title: '取締役 (董事會成員 / 執行董事)',
+                range: '1,500 萬日圓以上',
+                desc: '公司金字塔頂端、真正掌握決策與股權的「支配階級」！在大型上市企業中，取締役的報酬動輒數千萬甚至上億日圓。出入有專車接送，開會只需聽取簡報與簽字，掌握著所有社畜的升遷與生死！',
+                quote: '「今年的戰略方向需要微調...對了，把剛剛那個開會頂撞我的課長調去北海道分部吧。」',
+                imgUrl: images.torishimariyaku
+            };
+        }
+
+        // 渲染
+        document.getElementById('resultImg').src = rank.imgUrl;
+        document.getElementById('jpTitle').innerText = rank.title;
+        document.getElementById('jpSalaryRange').innerText = `約 ${jpSalaryTenThousand.toLocaleString()} 萬日圓 (${rank.range})`;
+        document.getElementById('jpDesc').innerText = rank.desc;
+        document.getElementById('jpQuote').innerText = rank.quote;
+
+        // 顯示
+        document.getElementById('resultBox').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
